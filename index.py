@@ -3,50 +3,60 @@ import json
 import pyautogui
 import threading
 
+# connected_lock = threading.Lock()
+# connected = "close"
+
 class GUIController:
     def __init__(self, data):
         self.data = data
 
     def processRequest(self):
-        global connected
-        connected = self.data['action']
-        if connected == "close":
-            return None
+        # global connected
+        # with connected_lock:
+        #     if self.data['action'] in ['open', 'close']:
+        #         connected = self.data['action']
+        #     if connected == "close":
+        #         return None
         
         print(self.data['action'])
 
-        # if self.data['action'] == "onmousemove":
-        #     self.onmousemove(self.data['data'])
-        # elif self.data['action'] == "onmousedown":
-        #     self.onmousedown(self.data['data'])
-        # elif self.data['action'] == "onmouseup":
-        #     self.onmouseup(self.data['data'])
-        # elif self.data['action'] == "onmousewheel":
-        #     self.onmousewheel(self.data['data'])
-        # elif self.data['action'] == "keydown":
-        #     self.keydown(self.data['data'])
-        # elif self.data['action'] == "keyup":
-        #     self.keyup(self.data['data'])
+        if self.data['action'] == "onmousemove":
+            self.onmousemove(self.data['data'])
+        elif self.data['action'] == "onmousedown":
+            self.onmousedown(self.data['data'])
+        elif self.data['action'] == "onmouseup":
+            self.onmouseup(self.data['data'])
+        elif self.data['action'] == "contextmenu":
+            self.contextmenu(self.data['data'])
+        elif self.data['action'] == "onmousewheel":
+            self.onmousewheel(self.data['data'])
+        elif self.data['action'] == "keydown":
+            self.keydown(self.data['data'])
+        elif self.data['action'] == "keyup":
+            self.keyup(self.data['data'])
 
     def onmousemove(self, data):
-        print(data)
-        # pyautogui.moveTo(data['offsetX'], data['offsetY'])
+        pyautogui.moveTo(data['offsetX'], data['offsetY'])
 
     def onmousedown(self, data):
-        print(data)
-        pyautogui.mouseDown()
+        pyautogui.mouseDown(x=data['offsetX'], y=data['offsetY'])
 
     def onmouseup(self, data):
-        pyautogui.mouseUp()
+        pyautogui.mouseUp(x=data['offsetX'], y=data['offsetY'])
+
+    def contextmenu(self, data):
+        pyautogui.click(button='right', x=data['offsetX'], y=data['offsetY'])
 
     def onmousewheel(self, data):
-        print(data)
+        pyautogui.scroll(data['deltaY'], x=data['offsetX'], y=data['offsetY'])
 
     def keydown(self, data):
         print(data)
+        # pyautogui.keyDown('shift')
 
     def keyup(self, data):
         print(data)
+        # pyautogui.keyUp('shift')
 
 class RequestHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
