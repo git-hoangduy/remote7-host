@@ -51,12 +51,14 @@ class GUIController:
         pyautogui.scroll(data['deltaY'], x=data['offsetX'], y=data['offsetY'])
 
     def keydown(self, data):
-        print(data)
-        # pyautogui.keyDown('shift')
+        keys = data['keyName'].lower().split('+')
+        for key in keys:
+            pyautogui.keyDown(key)
 
     def keyup(self, data):
-        print(data)
-        # pyautogui.keyUp('shift')
+        keys = data['keyName'].lower().split('+')
+        for key in keys:
+            pyautogui.keyUp(key)
 
 class RequestHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
